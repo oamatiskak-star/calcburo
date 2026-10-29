@@ -40,9 +40,14 @@ final class Weergave
         return implode(' ', $delen);
     }
 
-    public static function kop(string $titel, string $beschrijving, bool $metAanvraagScript, bool $indexeren = false): string
+    /**
+     * @param bool $metToestemming laadt toestemming.js (cookiekeuze; Google-tag alleen na toestemming).
+     *                             Uit voor de resultaatpagina zonder JavaScript en in testmodus.
+     */
+    public static function kop(string $titel, string $beschrijving, bool $metAanvraagScript, bool $indexeren = false, bool $metToestemming = true): string
     {
-        $script = $metAanvraagScript ? "\n  <script src=\"/assets/js/aanvraag.js?v=8be18622bb\" defer></script>" : '';
+        $script = $metToestemming ? "\n  <script src=\"/assets/js/toestemming.js?v=a195c8cd03\" defer></script>" : '';
+        $script .= $metAanvraagScript ? "\n  <script src=\"/assets/js/aanvraag.js?v=acf0223e76\" defer></script>" : '';
         $robots = $indexeren ? 'index,follow' : 'noindex,follow';
         return <<<HTML
 <!doctype html>
@@ -67,7 +72,7 @@ final class Weergave
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f7f6f1">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=6ba9faa0dc">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=481c0df5ad">
   <link rel="stylesheet" href="/assets/css/aanvraag.css?v=9e4e249329">
   <script src="/assets/js/main.js?v=31b582f31d" defer></script>{$script}
 </head>
@@ -149,6 +154,7 @@ HTML;
             <li><a href="/voorbeeldcalculatie.html">Voorbeeldcalculatie</a></li>
             <li><a href="/index.html#tarieven">Tarieven</a></li>
             <li><a href="/privacy.html">Privacyverklaring</a></li>
+            <li hidden><button class="foot-knop" type="button" data-cookie-instellingen>Cookie-instellingen</button></li>
           </ul>
         </div>
       </nav>
@@ -198,7 +204,7 @@ HTML;
     /** @param list<string> $voorkeuze */
     public static function aanvraagPagina(bool $actief, string $csrf, string $aanvraagId, string $testSleutel, bool $testmodus, array $voorkeuze = []): string
     {
-        $html = self::kop('Calculatie aanvragen | CalcBuro', 'Vraag een bouwcalculatie, hoeveelhedenstaat of begrotingscontrole aan bij CalcBuro. Beschrijf uw project en stuur tekeningen of bestek direct mee.', $actief, true);
+        $html = self::kop('Calculatie aanvragen | CalcBuro', 'Vraag een bouwcalculatie, hoeveelhedenstaat of begrotingscontrole aan bij CalcBuro. Beschrijf uw project en stuur tekeningen of bestek direct mee.', $actief, true, !$testmodus);
         $html .= "  <main id=\"inhoud\" tabindex=\"-1\">\n    <section class=\"section band contact intake\" aria-labelledby=\"aanvragen-titel\">\n      <div class=\"wrap intake-grid\">\n";
         $html .= "        <div class=\"intake-intro\">\n";
         $html .= "          <p class=\"eyebrow\">Calculatie aanvragen</p>\n";
@@ -334,7 +340,7 @@ HTML;
     public static function resultaat(array $body): string
     {
         $ok = ($body['ok'] ?? false) === true && ($body['opgeslagen'] ?? false) === true;
-        $html = self::kop($ok ? 'Aanvraag ontvangen | CalcBuro' : 'Aanvraag niet verwerkt | CalcBuro', 'Resultaat van uw calculatieaanvraag bij CalcBuro.', false);
+        $html = self::kop($ok ? 'Aanvraag ontvangen | CalcBuro' : 'Aanvraag niet verwerkt | CalcBuro', 'Resultaat van uw calculatieaanvraag bij CalcBuro.', false, false, false);
         $html .= "  <main id=\"inhoud\" tabindex=\"-1\">\n    <section class=\"section intake-result\" aria-labelledby=\"resultaat-titel\">\n      <div class=\"wrap\">\n";
         if ($ok) {
             $ref = self::e((string) $body['referentie']);

@@ -1,7 +1,7 @@
 # CalcBuro — projectstatus
 
 ## 🔴 HERSTEL HIER NA CRASH
-Live op https://calcburo.nl sinds 29-10-2026. Canonieke bron: `hosting/` in deze repository. Volgende wijziging: zie README "Deployment in het kort" en `hosting/DEPLOY.md` §0 (assetversies, tests, alleen gewijzigde bestanden uploaden, nooit `config.php` uit git uploaden).
+Live op https://calcburo.nl sinds 29-10-2026. Canonieke bron: hosting/. Ook cookietoestemming en de bestaande Google Ads-aanvraagconversie zijn op 29-10-2026 gepubliceerd en getest. Live configuratie niet overschrijven met de uit-configuratie uit git.
 
 ## Live status (29-10-2026, door eigenaar/integratie op productie vastgesteld)
 - Cloud86/Plesk, PHP 8.3.36 met fileinfo en zip; private map schrijfbaar; private URL geeft 404.
@@ -14,7 +14,8 @@ Live op https://calcburo.nl sinds 29-10-2026. Canonieke bron: `hosting/` in deze
 - ✅ Website (homepage, landingspagina's, voorbeeldcalculatie, privacyverklaring)
 - ✅ Aanvraagflow PHP: validatie incl. Office-ZIP-controle, limieten, opslagcapaciteit 1 GiB, idempotentie op inhoud, crashherstel, mail via hosting
 - ✅ Bewaartermijn 90 dagen via dagelijkse opschoning; meldingsmail handmatig verwijderen
-- ✅ Tests: PHP 51 (8.3 en 8.5), Node 16, e2e 17; root-preview 840
+- 🔄 Cookietoestemming + Google Ads-conversie (AW-18516347577/7tJyCMmp1Z4dELmVpP1E, basic consent mode, alleen na toestemming en bevestigde live-aanvraag): live gepubliceerd; netwerkcontrole zonder keuze, na weigering, na accepteren en na intrekken uitgevoerd. _gcl_aw-cookie bevestigd. Live API-test CB-7F8DW64G: opgeslagen en herhaling ontdubbeld, zonder testconversie naar Google. Eerste echte aan Ads toegeschreven conversie nog niet bevestigd.
+- ✅ Tests: PHP 56 (8.3 en 8.5), Node 29 (`node --test tests/*.test.mjs`), e2e 20; root-preview 840
 - ⏳ Organisatorisch: verwerkersovereenkomsten Cloud86/Jortt, handelsnaam "CalcBuro B.V." juridisch toetsen
 
 ## Afgesloten (historisch)

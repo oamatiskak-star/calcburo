@@ -12,12 +12,41 @@ Geen Supabase, geen Resend, geen API-sleutels, geen accountwachtwoorden. Betalin
 1. Wijzig in `hosting/httpdocs` (site) of `hosting/calcburo-app/src` (aanvraagflow).
 2. Gewijzigde CSS/JS? `node tools/asset-versies.mjs` — zet `?v=<SHA-256, 10 tekens>` in alle HTML en in
    `Weergave.php`. De server cachet JS/CSS 7 dagen; HTML revalideert (`no-cache`), PHP is `no-store`.
-3. Testen vanuit `hosting/`: `php tests/selftest.php && node --test tests/ && tools/e2e-lokaal.sh`
+3. Testen vanuit `hosting/`: `php tests/selftest.php && node --test tests/*.test.mjs && tools/e2e-lokaal.sh`
    (productielijn: `PHP=8.3 npx -y @php-wasm/cli@latest tests/selftest.php`).
 4. Back-up maken (Plesk) en alleen de gewijzigde bestanden uploaden naar dezelfde paden.
 5. **Nooit `calcburo-app/config.php` uit de repository uploaden.** In de repository staat die bewust op `'uit'`;
    op de server staat de live-configuratie. Wijzig instellingen alleen in het serverbestand.
 6. Nooit iets in `private/calcburo/` overschrijven of verwijderen (aanvragen, `geheim.key`, sloten).
+
+### 0a. Wijziging cookietoestemming + Google Ads-conversie (29-10-2026, gepubliceerd en gecontroleerd)
+
+Gepubliceerd na back-up calcburo-voor-ads-meting-20261029.zip buiten httpdocs. Live controle: Google-verzoeken na toestemming 200/204, _gcl_aw gezet; geen Google-verzoeken zonder toestemming of na weigering/intrekken. CSP bevat ook het daadwerkelijk gebruikte ad.doubleclick.net. Live API-test CB-7F8DW64G slaagt; geen testconversie naar Google verstuurd. Eerste echte toegeschreven Ads-conversie nog te bevestigen.
+
+Bij opnieuw publiceren alleen deze bestanden; **niet** `config.php`:
+
+```
+httpdocs/assets/js/toestemming.js        NIEUW
+httpdocs/assets/js/aanvraag.js           GEWIJZIGD  (event na bevestigde opslag, formulier geleegd)
+httpdocs/assets/css/styles.css           GEWIJZIGD  (keuzekaart, footerknop)
+httpdocs/*.html (alle 10)                GEWIJZIGD  (CSP met Google Ads-domeinen, toestemming.js, Cookie-instellingen; privacy.html nieuwe sectie)
+calcburo-app/src/Http.php                GEWIJZIGD  (CSP_PAGINA; testmodus strikt)
+calcburo-app/src/Weergave.php            GEWIJZIGD  (toestemming.js, footerknop, assetversies)
+calcburo-app/src/Verwerker.php           GEWIJZIGD  (live + conversie_id in JSON-succes)
+calcburo-app/src/Idempotentie.php        GEWIJZIGD  (conversieId = HMAC)
+```
+
+Volgorde: eerst `calcburo-app/src/*` (oude pagina's negeren de nieuwe JSON-velden), dan assets, dan HTML.
+
+Controle na publicatie (eigen browser, privévenster):
+1. Homepage: keuzekaart zichtbaar; DevTools → Netwerk: **geen** verzoek naar `google*`/`doubleclick`. Weigeren → nog steeds niets; volgende pagina geen kaart.
+2. Footer → Cookie-instellingen → Accepteren: één verzoek `gtag/js?id=AW-18516347577`; Tag Assistant toont consent `ad_storage`/`ad_user_data` granted, `ad_personalization`/`analytics_storage` denied.
+3. Landing met `?gclid=TEST123`: cookie `_gcl_aw` gezet (controleer dat `send_page_view: false` de koppeling niet hindert; zo niet, melden).
+4. Eén echte live-aanvraag → precies één conversiehit met `transaction_id` (32 hex, geen `CB-`); geen naam/e-mail/`em=` in de hit; zelfde formulier opnieuw versturen → geen tweede hit. Daarna die aanvraag verwijderen. In Google Ads de conversie pas na enkele uren zichtbaar.
+5. Cookie-instellingen → Weigeren: pagina herlaadt, `_gcl_*` weg, geen nieuwe Google-verzoeken.
+6. Google Ads → Conversies → instellingen: enhanced conversions (ook "automatisch") **uit** laten.
+
+Terugdraaien: de vorige versies van bovenstaande bestanden terugzetten (back-up). Alleen `toestemming.js` weghalen is onvoldoende, omdat de HTML ernaar verwijst.
 
 ## 1. Deploytree
 
@@ -134,8 +163,8 @@ Alleen **nieuwe** bestanden; bestaande pagina's niet overschrijven.
 ## 8. Lokaal testen
 
 ```
-php tests/selftest.php                    # 51 tests: validatie, Office-ZIP, limiet, idempotentie op inhoud, capaciteit, foutinjectie/crashherstel, opslag, mail (mock), opschoning, docroot, weergave
-node --test tests/                        # 16 tests: frontend-JS, copy, Open Graph, layoutvolgorde, assetversies, statische checks, rooktest entrypoints
-tools/e2e-lokaal.sh                       # 17 checks: PHP-server + curl: sessie/CSRF/upload, duplicaat vs. 409, opslag vol, noJS (mail uit)
+php tests/selftest.php                    # 56 tests: validatie, Office-ZIP, limiet, idempotentie op inhoud, capaciteit, foutinjectie/crashherstel, opslag, mail (mock), opschoning, docroot, weergave
+node --test tests/*.test.mjs              # 29 tests: frontend-JS, copy, Open Graph, layoutvolgorde, assetversies, rooktest, cookietoestemming/Google Ads (nep-DOM, geen netwerk)
+tools/e2e-lokaal.sh                       # 20 checks: PHP-server + curl: sessie/CSRF/upload, duplicaat vs. 409, opslag vol, noJS, testmodus zonder Google (mail uit)
 ```
 Op PHP 8.3 (= productie) zonder lokale 8.3: `PHP=8.3 npx -y @php-wasm/cli@latest tests/selftest.php`. Zonder lokale `php` draait `tools/php.sh` PHP 8 in WebAssembly via `npx @php-wasm/cli` (zelftest en rooktest; de e2e vereist native php).

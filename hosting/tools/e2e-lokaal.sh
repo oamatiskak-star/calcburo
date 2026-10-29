@@ -30,6 +30,7 @@ check "sessiecookie __Host-cbsessie gezet" 1 "$(grep -c '__Host-cbsessie' "$JAR"
 HDR=$(curl -s -D - -o /dev/null "$B/aanvraag.php?test=$SLEUTEL")
 check "CSP-header met form-action self" 1 "$(printf '%s' "$HDR" | grep -c "form-action 'self'")"
 check "Referrer-Policy same-origin" 1 "$(printf '%s' "$HDR" | grep -ci 'referrer-policy: same-origin')"
+check "testmodus: geen Google in CSP en geen toestemming.js" "0 0" "$(printf '%s' "$HDR" | grep -ci 'google') $(printf '%s' "$HTML" | grep -c 'toestemming\.js\|googletagmanager')"
 
 printf '%%PDF-1.4\n%%EOF\n' > "$TMP/tekening.pdf"
 printf 'MZ uitvoerbaar' > "$TMP/nep.pdf"
@@ -43,6 +44,7 @@ check "nep-PDF geweigerd" 422 "$(post https://calcburo.nl "$CSRF" "$ID" -F "docu
 check "geen aanvraag opgeslagen na weigeringen" 0 "$(ls "$TMP/data/aanvragen" 2>/dev/null | wc -l | tr -d ' ')"
 check "geldige aanvraag met PDF opgeslagen" 201 "$(post https://calcburo.nl "$CSRF" "$ID" -F "documenten[]=@$TMP/tekening.pdf;type=application/pdf")"
 REF=$(php -r 'echo json_decode(file_get_contents($argv[1]), true)["referentie"] ?? "";' "$TMP/out.json")
+check "testmodus-succes: live=false, geen conversie-ID" "false NULL" "$(php -r '$b=json_decode(file_get_contents($argv[1]), true); echo var_export($b["live"], true), " ", var_export($b["conversie_id"], true);' "$TMP/out.json")"
 check "mailstatus eerlijk: uitgeschakeld" uitgeschakeld "$(php -r 'echo json_decode(file_get_contents($argv[1]), true)["mail"]["bevestiging"] ?? "";' "$TMP/out.json")"
 check "document onder willekeurige naam buiten httpdocs" 1 "$(ls "$TMP/data/aanvragen/$REF/documenten" | grep -cE '^[0-9a-f]{32}\.pdf$')"
 check "identieke herhaling (zelfde document) geeft zelfde referentie" "200 $REF" "$(post https://calcburo.nl "$CSRF" "$ID" -F "documenten[]=@$TMP/tekening.pdf;type=application/pdf") $(php -r 'echo json_decode(file_get_contents($argv[1]), true)["referentie"] ?? "";' "$TMP/out.json")"
@@ -53,5 +55,7 @@ ID2=$(php -r '$b=random_bytes(16);$b[6]=chr((ord($b[6])&0x0f)|0x40);$b[8]=chr((o
 check "opslag vol: 503 met eerlijke melding" "503 capaciteit" "$(post https://calcburo.nl "$CSRF" "$ID2") $(php -r 'echo json_decode(file_get_contents($argv[1]), true)["fout"]["code"] ?? "";' "$TMP/out.json")"
 check "opslag vol: bestaand bestand onaangeroerd, geen nieuwe map" "67107864 2" "$(php -r 'echo filesize($argv[1]);' "$TMP/data/aanvragen/CB-ZZZZZZZZ/vol.pdf") $(ls "$TMP/data/aanvragen" | wc -l | tr -d ' ')"
 check "zonder JavaScript (geen Accept JSON) HTML-resultaat" 1 "$(curl -s -b "$JAR" -H 'Origin: https://calcburo.nl' "$B/api/aanvraag.php" -F "csrf=$CSRF" -F "aanvraag_id=$ID" -F "test_sleutel=$SLEUTEL" -F 'naam=E2E Test' -F 'email=e2e@voorbeeld.nl' -F 'project=Rooktest' -F 'website=' -F "documenten[]=@$TMP/tekening.pdf;type=application/pdf" | grep -c "$REF")"
+NOJS=$(curl -s -D - -b "$JAR" -H 'Origin: https://calcburo.nl' "$B/api/aanvraag.php" -F "csrf=$CSRF" -F "aanvraag_id=$ID" -F "test_sleutel=$SLEUTEL" -F 'naam=E2E Test' -F 'email=e2e@voorbeeld.nl' -F 'project=Rooktest' -F 'website=' -F "documenten[]=@$TMP/tekening.pdf;type=application/pdf")
+check "zonder JavaScript: geen Google, geen toestemming.js, geen conversie-ID, CSP zonder Google" 0 "$(printf '%s' "$NOJS" | grep -ci 'google\|toestemming\.js\|conversie')"
 check "aanvraaggegevens niet via de website op te vragen" 0 "$(curl -s --path-as-is "$B/../data/aanvragen/$REF/aanvraag.json" | grep -c aangemaakt_unix)"
 exit $FOUT

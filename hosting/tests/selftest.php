@@ -470,6 +470,56 @@ test('logregels bevatten geen persoonsgegevens', function () {
     }
 });
 
+echo "Google Ads-conversie (server)\n";
+test('live-aanvraag: opaque conversie-ID, niet herleidbaar tot referentie; duplicaat zelfde ID maar duplicaat=true', function () use ($TOKEN, $NU) {
+    [$v] = opzet();
+    $post = geldigePost();
+    $a = $v->verwerk(server(), $post, [], $TOKEN, $NU);
+    gelijk([201, true, false], [$a['status'], $a['body']['live'], $a['body']['duplicaat']]);
+    $id = $a['body']['conversie_id'];
+    zeker(is_string($id) && preg_match('/^[0-9a-f]{32}$/', $id) === 1, 'conversie-ID 32 hex');
+    $ref = $a['body']['referentie'];
+    zeker(!str_contains($id, $ref) && !str_contains(strtoupper($id), substr($ref, 3)), 'referentie niet in conversie-ID');
+    foreach (['md5', 'sha1', 'sha256'] as $algo) {
+        zeker(!str_starts_with(hash($algo, $ref), $id) && !str_starts_with(hash($algo, substr($ref, 3)), $id), "geen ongesleutelde {$algo} van de referentie");
+    }
+    $dup = $v->verwerk(server(), $post, [], $TOKEN, $NU + 5);
+    gelijk([200, true, $id], [$dup['status'], $dup['body']['duplicaat'], $dup['body']['conversie_id']], 'duplicaat');
+    $b = $v->verwerk(server(), geldigePost(), [], $TOKEN, $NU);
+    zeker($b['body']['conversie_id'] !== $id, 'andere aanvraag, ander conversie-ID');
+    $json = json_encode($a['body']);
+    foreach (['jan@voorbeeld.nl', 'Jan Tester', 'Twaalf', 'Utrecht'] as $pii) {
+        zeker(!str_contains($json, $pii), "invoer '{$pii}' in API-antwoord");
+    }
+});
+test('testmodus: succes zonder conversie-ID en met live=false', function () use ($TOKEN, $NU) {
+    $sleutel = str_repeat('t', 32);
+    [$v] = opzet(['modus' => 'test', 'test_sleutel' => $sleutel]);
+    $r = $v->verwerk(server(), geldigePost(['test_sleutel' => $sleutel]), [], $TOKEN, $NU);
+    gelijk([201, false, null], [$r['status'], $r['body']['live'], $r['body']['conversie_id']]);
+});
+test('fouten (validatie, conflict, limiet, honeypot): geen live-vlag en geen conversie-ID', function () use ($TOKEN, $NU) {
+    [$v] = opzet(['limieten' => ['email' => [1, 3600]]]);
+    $post = geldigePost();
+    $v->verwerk(server(), $post, [], $TOKEN, $NU);
+    $fouten = [
+        $v->verwerk(server(), geldigePost(['email' => 'geen-adres']), [], $TOKEN, $NU),
+        $v->verwerk(server(), ['project' => 'Ander project'] + $post, [], $TOKEN, $NU),
+        $v->verwerk(server(), geldigePost(), [], $TOKEN, $NU),
+        $v->verwerk(server(), geldigePost(['website' => 'x']), [], $TOKEN, $NU),
+    ];
+    gelijk([422, 409, 429, 400], array_map(static fn ($r) => $r['status'], $fouten));
+    foreach ($fouten as $r) {
+        zeker(!array_key_exists('conversie_id', $r['body']) && !array_key_exists('live', $r['body']), 'fout zonder conversiegegevens');
+    }
+});
+test('CSP: API strikt zonder Google; aanvraagpagina staat alleen de Google-tag toe, geen iframes of inline', function () {
+    zeker(!str_contains(CalcBuro\Http::CSP, 'google'), 'API-CSP zonder Google');
+    $p = CalcBuro\Http::CSP_PAGINA;
+    zeker(str_contains($p, "script-src 'self' https://www.googletagmanager.com"));
+    zeker(!str_contains($p, 'unsafe-') && !str_contains($p, 'frame-src') && str_contains($p, "frame-ancestors 'none'") && str_contains($p, "form-action 'self'"));
+});
+
 echo "Idempotentie op inhoud, capaciteit en herstel\n";
 test('zelfde aanvraag-ID: identieke inhoud = duplicaat; gewijzigd project, document of extra document = 409', function () use ($TOKEN, $NU) {
     [$v, $mailer, $data] = opzet();
@@ -706,6 +756,18 @@ test('resultaatpagina escapet en meldt geen succes bij fout', function () {
     foreach (['mailserver', 'garanderen', 'opgeslagen', 'afgerekend', 'Jortt'] as $woord) {
         zeker(!str_contains($ok, $woord), "intern woord '{$woord}' op publieke resultaatpagina");
     }
+});
+
+test('toestemming.js: op live/uit-pagina wel, in testmodus en op resultaatpagina (zonder JavaScript) nooit', function () {
+    $live = Weergave::aanvraagPagina(true, str_repeat('c', 64), CalcBuro\Http::uuidV4(), '', false);
+    zeker(preg_match('#<script src="/assets/js/toestemming\.js\?v=[0-9a-f]{10}" defer></script>#', $live) === 1, 'toestemming.js op live-pagina');
+    zeker(str_contains($live, 'data-cookie-instellingen'), 'cookie-instellingen in footer');
+    zeker(!str_contains($live, 'googletagmanager') && !str_contains($live, 'gtag('), 'geen Google-code in de HTML zelf');
+    zeker(str_contains(Weergave::aanvraagPagina(false, '', '', '', false), 'toestemming.js'), 'ook als formulier uit staat');
+    $test = Weergave::aanvraagPagina(true, str_repeat('c', 64), CalcBuro\Http::uuidV4(), str_repeat('t', 32), true);
+    zeker(!str_contains($test, 'toestemming.js'), 'testmodus zonder toestemming.js');
+    $ok = Weergave::resultaat(['ok' => true, 'opgeslagen' => true, 'duplicaat' => false, 'live' => true, 'conversie_id' => str_repeat('a', 32), 'referentie' => 'CB-ABCDEFGH', 'documenten' => 0, 'mail' => ['intern' => 'geaccepteerd', 'bevestiging' => 'geaccepteerd']]);
+    zeker(!str_contains($ok, 'toestemming.js') && !preg_match('/google|gtag|' . str_repeat('a', 32) . '/i', $ok), 'resultaatpagina zonder Google en zonder conversie-ID');
 });
 
 echo "\n{$geslaagd} geslaagd, " . count($mislukt) . " mislukt\n";

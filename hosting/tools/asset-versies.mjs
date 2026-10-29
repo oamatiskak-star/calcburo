@@ -32,7 +32,7 @@ const doelen = [
   join(root, 'calcburo-app/src/Weergave.php'),
 ].filter(existsSync);
 
-const PATROON = /(\/?)(assets\/(?:css|js)\/[A-Za-z0-9._-]+\.(?:css|js))(\?v=[0-9a-f]*)?(?=["'])/g;
+const PATROON = /(\/?)(assets\/(?:css|js)\/[A-Za-z0-9._-]+\.(?:css|js))(\?v=[0-9a-f]*)?(?=["'\\])/g; // ook \" in PHP-strings
 const verouderd = [];
 let gewijzigd = 0;
 

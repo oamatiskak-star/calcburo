@@ -13,12 +13,25 @@ final class Http
 {
     public const SESSIE = '__Host-cbsessie';
 
+    /** API en resultaatpagina (route zonder JavaScript): nooit Google. */
     public const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; "
         . "connect-src 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'";
 
-    public static function beveiligingsHeaders(): void
+    /**
+     * Aanvraagpagina: staat de Google-tag toe. Of die ook laadt, beslist toestemming.js (alleen na
+     * toestemming). Geen frame-src: iframes van Google (remarketing) blijven geblokkeerd.
+     */
+    public const CSP_PAGINA = "default-src 'self'; img-src 'self' data: " . self::GOOGLE_IMG . "; style-src 'self'; "
+        . "script-src 'self' " . self::GOOGLE_SCRIPT . "; font-src 'self'; connect-src 'self' " . self::GOOGLE_CONNECT . "; "
+        . "form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'";
+
+    public const GOOGLE_SCRIPT = 'https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com';
+    public const GOOGLE_IMG = 'https://www.googletagmanager.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.com https://www.google.nl';
+    public const GOOGLE_CONNECT = 'https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.com';
+
+    public static function beveiligingsHeaders(string $csp = self::CSP): void
     {
-        header('Content-Security-Policy: ' . self::CSP);
+        header('Content-Security-Policy: ' . $csp);
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: DENY');
         header('Referrer-Policy: same-origin'); // same-origin: de browser stuurt Origin mee bij het verzenden
@@ -165,9 +178,10 @@ final class Http
     /** @param array<string, mixed> $get */
     public static function pagina(array $get): void
     {
-        self::beveiligingsHeaders();
-        header('Content-Type: text/html; charset=utf-8');
         $config = self::config();
+        // Testmodus: geen Google-tag en strikte CSP, zodat een acceptatietest nooit als conversie telt.
+        self::beveiligingsHeaders($config['modus'] === 'test' ? self::CSP : self::CSP_PAGINA);
+        header('Content-Type: text/html; charset=utf-8');
         $testSleutel = '';
         $actief = $config['modus'] === 'live';
         if ($config['modus'] === 'test') {

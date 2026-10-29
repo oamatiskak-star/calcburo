@@ -1626,3 +1626,104 @@ main:focus {
     transform: none;
   }
 }
+
+/* ---------- Cookietoestemming (toestemming.js) ---------- */
+/* Niet-modaal: de pagina blijft bruikbaar. Accepteren en Weigeren zijn gelijkwaardig vormgegeven. */
+.cookie-keuze {
+  position: fixed;
+  z-index: 50;
+  right: var(--gutter);
+  bottom: 1rem;
+  left: var(--gutter);
+  max-width: 40rem;
+  margin-left: auto;
+  padding: 1.25rem 1.375rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgb(24 51 68 / 0.18);
+}
+
+.cookie-keuze:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.cookie-keuze-titel {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-base);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.cookie-keuze p {
+  margin: 0 0 1rem;
+  font-size: var(--text-small);
+}
+
+.cookie-keuze-knoppen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.cookie-keuze .cookie-knop {
+  width: 100%;
+}
+
+html.cookie-keuze-open {
+  scroll-padding-bottom: 16rem;
+}
+
+html.cookie-keuze-open body {
+  padding-bottom: 16rem;
+}
+
+.cookie-keuze-status {
+  position: fixed;
+  z-index: 50;
+  right: var(--gutter);
+  bottom: 1rem;
+  max-width: 28rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: var(--text-small);
+}
+
+.cookie-keuze-status:empty {
+  display: none;
+}
+
+.foot-knop {
+  display: inline-block;
+  padding: 0.375rem 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+}
+
+.foot-knop:hover {
+  color: var(--petrol);
+}
+
+@media (max-width: 600px) {
+  .cookie-keuze {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    padding: 1rem;
+  }
+
+  html.cookie-keuze-open body {
+    padding-bottom: 22rem;
+  }
+}

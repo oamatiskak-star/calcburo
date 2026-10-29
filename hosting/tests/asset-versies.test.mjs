@@ -19,6 +19,11 @@ test('opgeleverde HTML en Weergave.php verwijzen naar de actuele inhoudshash', (
   const css = hash(join(root, 'httpdocs/assets/css/styles.css'));
   assert.match(readFileSync(join(root, 'httpdocs/index.html'), 'utf8'), new RegExp(`assets/css/styles\\.css\\?v=${css}"`));
   assert.match(readFileSync(join(root, 'calcburo-app/src/Weergave.php'), 'utf8'), new RegExp(`/assets/css/styles\\.css\\?v=${css}"`));
+  // Verwijzingen binnen PHP-strings (\") worden ook bijgewerkt.
+  const weergave = readFileSync(join(root, 'calcburo-app/src/Weergave.php'), 'utf8');
+  for (const js of ['aanvraag.js', 'toestemming.js']) {
+    assert.ok(weergave.includes(`/assets/js/${js}?v=${hash(join(root, 'httpdocs/assets/js', js))}\\"`), js + ' in Weergave.php actueel');
+  }
 });
 
 test('gewijzigd asset: --check faalt, bijwerken herstelt alle verwijzingen (met en zonder voorloop-/)', () => {

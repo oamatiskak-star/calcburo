@@ -1,7 +1,9 @@
 /* CalcBuro — aanvraagformulier (progressive enhancement).
  * Zonder JavaScript verstuurt de browser het formulier gewoon naar /api/aanvraag.php en toont de server
  * een resultaatpagina. Met JavaScript: validatie vooraf, uploadvoortgang en het ontvangstbewijs op de pagina.
- * Succes wordt alleen getoond bij ok === true, opgeslagen === true en een geldig referentienummer. */
+ * Succes wordt alleen getoond bij ok === true, opgeslagen === true en een geldig referentienummer.
+ * Daarna volgt het event 'calcburo:aanvraag-opgeslagen' met alleen { live, duplicaat, conversieId };
+ * toestemming.js beslist of dat (met toestemming) een Google Ads-conversie wordt. */
 (function (root, factory) {
   'use strict';
   var api = factory();
@@ -16,6 +18,7 @@
 
   var TOEGESTAAN = ['pdf', 'ifc', 'xlsx', 'xls', 'csv', 'docx', 'jpg', 'jpeg', 'png'];
   var REF_PATROON = /^CB-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/;
+  var CONVERSIE_ID = /^[0-9a-f]{32}$/;
   var MAIL_ROUTE = 'Mail uw aanvraag naar calculatie@calcburo.nl.';
   var VELDMELDINGEN = {
     naam: { verplicht: 'Vul uw naam in.', te_lang: 'Uw naam is te lang.', ongeldig: 'Controleer uw naam.' },
@@ -63,12 +66,21 @@
   function klassificeer(status, body) {
     if (body && body.ok === true && body.opgeslagen === true && typeof body.referentie === 'string' && REF_PATROON.test(body.referentie) && (status === 200 || status === 201)) {
       var mail = body.mail || {};
-      return { soort: 'succes', referentie: body.referentie, documenten: Number(body.documenten) || 0, mail: mailTekst(String(mail.intern), String(mail.bevestiging)) };
+      return { soort: 'succes', referentie: body.referentie, documenten: Number(body.documenten) || 0, mail: mailTekst(String(mail.intern), String(mail.bevestiging)), conversie: conversie(body) };
     }
     var fout = body && body.fout && typeof body.fout.bericht === 'string' ? body.fout : null;
     if (fout) return { soort: 'fout', code: String(fout.code || ''), bericht: fout.bericht, velden: fout.velden || {} };
     if (status === 0) return { soort: 'fout', code: 'netwerk', bericht: 'Verzenden is niet gelukt; er is geen ontvangst bevestigd. Controleer uw verbinding en probeer het opnieuw, of ' + MAIL_ROUTE.toLowerCase(), velden: {} };
     return { soort: 'fout', code: 'onbekend', bericht: 'Er is geen ontvangst bevestigd. Probeer het opnieuw of ' + MAIL_ROUTE.toLowerCase(), velden: {} };
+  }
+
+  /** Alleen wat toestemming.js nodig heeft; nooit referentie of formuliergegevens. */
+  function conversie(body) {
+    return {
+      live: body.live === true,
+      duplicaat: body.duplicaat !== false,
+      conversieId: typeof body.conversie_id === 'string' && CONVERSIE_ID.test(body.conversie_id) ? body.conversie_id : ''
+    };
   }
 
   function documentenTekst(n) {
@@ -153,8 +165,13 @@
       doc.getElementById('ontvangst-docs').textContent = documentenTekst(r.documenten);
       doc.getElementById('ontvangst-mail').textContent = r.mail;
       form.hidden = true;
+      form.reset(); // ingevulde gegevens en bestandsnamen weg uit de pagina, vóór een eventuele conversie
+      lijst.textContent = '';
       bewijs.hidden = false;
       bewijs.focus();
+      if (typeof window.CustomEvent === 'function') {
+        doc.dispatchEvent(new window.CustomEvent('calcburo:aanvraag-opgeslagen', { detail: r.conversie }));
+      }
     }
 
     function toonFout(r) {
@@ -202,5 +219,5 @@
     });
   }
 
-  return { bestandFout: bestandFout, klassificeer: klassificeer, mailTekst: mailTekst, documentenTekst: documentenTekst, extensie: extensie, start: start };
+  return { bestandFout: bestandFout, klassificeer: klassificeer, conversie: conversie, mailTekst: mailTekst, documentenTekst: documentenTekst, extensie: extensie, start: start };
 });

@@ -34,6 +34,16 @@ class Idempotentie
     }
 
     /**
+     * Opaque ID voor de Google Ads-conversie (transaction_id): sleutelgebonden afgeleide van de
+     * referentie, zodat Google het publieke CB-nummer nooit ziet en het er ook niet uit kan herleiden.
+     * Deterministisch per aanvraag, dus ook bruikbaar voor ontdubbeling.
+     */
+    public function conversieId(string $referentie): string
+    {
+        return substr(hash_hmac('sha256', 'conversie|' . $referentie, $this->geheim), 0, 32);
+    }
+
+    /**
      * Hash over alle ingevulde velden en de inhoud van de documenten (in volgorde).
      * Gelijke hash = identieke herhaling; andere hash met hetzelfde ID = conflict.
      *

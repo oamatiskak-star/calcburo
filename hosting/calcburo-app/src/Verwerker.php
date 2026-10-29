@@ -137,12 +137,12 @@ final class Verwerker
                 return self::fout(409, 'conflict');
             }
             if ($bestaand !== null) {
-                return self::succes(200, $this->rondAf($record, $bestaand, $velden, $nu), true);
+                return $this->succes(200, $this->rondAf($record, $bestaand, $velden, $nu), true);
             }
             if ($isOpgeslagen) {
                 // Record zegt opgeslagen, maar de aanvraag is weg (handmatig verwijderd of verplaatst).
                 Log::melding('record_zonder_aanvraag ' . (string) $record['referentie']);
-                return self::succes(200, $record, true);
+                return $this->succes(200, $record, true);
             }
             // Status 'bezig' zonder complete aanvraag: eerdere poging afgebroken of tijdelijk geweigerd
             // (capaciteit/opslagfout). Er is niets opgeslagen, dus ook gecorrigeerde inhoud is toegestaan.
@@ -206,7 +206,7 @@ final class Verwerker
         if ($opgeslagen === null) {
             return self::fout(500, 'opslag');
         }
-        return self::succes(201, $this->rondAf($record, $opgeslagen, $velden, $nu), false);
+        return $this->succes(201, $this->rondAf($record, $opgeslagen, $velden, $nu), false);
     }
 
     /**
@@ -363,8 +363,11 @@ final class Verwerker
      * @param array<string, mixed> $record
      * @return array{status: int, body: array<string, mixed>, headers: array<string, string>}
      */
-    private static function succes(int $status, array $record, bool $duplicaat): array
+    private function succes(int $status, array $record, bool $duplicaat): array
     {
+        // 'live' en 'conversie_id' alleen voor de JavaScript-route: daar beslist de browser (met
+        // toestemming) over een Google Ads-conversie. Testmodus krijgt nooit een conversie-ID.
+        $live = $this->config['modus'] === 'live';
         return [
             'status' => $status,
             'body' => [
@@ -374,6 +377,8 @@ final class Verwerker
                 'referentie' => $record['referentie'],
                 'documenten' => $record['documenten'],
                 'mail' => ['intern' => $record['mail_intern'], 'bevestiging' => $record['mail_bevestiging']],
+                'live' => $live,
+                'conversie_id' => $live ? $this->idempotentie->conversieId((string) $record['referentie']) : null,
             ],
             'headers' => [],
         ];

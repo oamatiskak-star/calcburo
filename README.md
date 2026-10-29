@@ -25,9 +25,9 @@ Geen build. Publiceren = gewijzigde bestanden uit `hosting/` uploaden naar dezel
 ```bash
 cd hosting
 node tools/asset-versies.mjs          # na wijziging van CSS/JS: ?v=<inhoudshash> bijwerken in HTML en Weergave.php
-php tests/selftest.php                # 51 PHP-tests (validatie, limieten, idempotentie, capaciteit, crashherstel, mail-mock, opschoning)
-node --test tests/                    # 16 Node-tests (frontend, copy, Open Graph, assetversies, rooktest entrypoints)
-tools/e2e-lokaal.sh                   # 17 end-to-end checks met PHP-server + curl (mail uit)
+php tests/selftest.php                # 56 PHP-tests (validatie, limieten, idempotentie, capaciteit, crashherstel, mail-mock, opschoning, conversie-ID)
+node --test tests/*.test.mjs          # 29 Node-tests (frontend, copy, Open Graph, assetversies, rooktest, cookietoestemming/Google Ads)
+tools/e2e-lokaal.sh                   # 20 end-to-end checks met PHP-server + curl (mail uit)
 ```
 
 Regels:

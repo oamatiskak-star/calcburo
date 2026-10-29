@@ -65,7 +65,8 @@ test('alle pagina’s: privacylink in de footer, geen mailto-formulier, CTA naar
     assert.doesNotMatch(s, /#aanvragen"|index\.html\?(rol|uitwerking)=/, f + ': oude aanvraaglink');
     assert.match(s, /href="aanvraag\.php/, f + ': CTA');
     assert.doesNotMatch(s, /supabase|resend/i, f + ': oude backend');
-    assert.match(s, /connect-src 'none'/, f + ': statische pagina maakt geen verbindingen');
+    // Verbindingen alleen naar de Google Ads-domeinen; of die gebruikt worden, beslist toestemming.js.
+    assert.match(s, /connect-src https:\/\/www\.googletagmanager\.com https:\/\/www\.googleadservices\.com https:\/\/googleads\.g\.doubleclick\.net https:\/\/www\.google\.com;/, f + ': verbindingen alleen naar Google Ads');
   }
 });
 
@@ -88,7 +89,23 @@ test('privacyverklaring: verantwoordelijke, verwerkers, bewaartermijnen, geen op
   assert.doesNotMatch(s, /bezoekadres/);
   assert.match(s, /Het aanvraagformulier gebruikt geen AI\./);
   assert.match(s, /stemmen wij vooraf met u af/);
-  assert.doesNotMatch(s, /OpenAI|ChatGPT|Anthropic|Claude|Gemini|Copilot|Azure|Google|Amazon|doorgifte|buiten de (EU|EER)/i);
+  // AI-paragraaf: geen providernamen of doorgifteclaims. Google staat alleen in de Google Ads-paragraaf.
+  const ai = s.slice(s.indexOf('<h2>Aanvraagformulier en AI</h2>'), s.indexOf('<h2>Voorstel, akkoord en factuur</h2>'));
+  assert.ok(ai.length > 100);
+  assert.doesNotMatch(ai, /OpenAI|ChatGPT|Anthropic|Claude|Gemini|Copilot|Azure|Google|Amazon|doorgifte|buiten de (EU|EER)/i);
+  assert.doesNotMatch(s, /OpenAI|ChatGPT|Anthropic|Claude|Gemini|Copilot|Azure|Amazon/);
+  // Cookies: geen bewering meer dat er geen advertentiecookies zijn; wel feitelijke, optionele Google Ads.
+  assert.doesNotMatch(s, /geen analytics-, advertentie- of trackingcookies/);
+  assert.match(s, /<h2 id="cookies">Cookies en Google Ads<\/h2>/);
+  assert.match(s, /alleen met uw toestemming/);
+  assert.match(s, /Weigert u, of maakt u geen keuze, dan laadt de website niets van Google en sturen wij niets naar Google\./);
+  assert.match(s, /Google Ireland Limited/);
+  assert.match(s, /href="https:\/\/policies\.google\.com\/privacy\?hl=nl"/);
+  assert.match(s, /Volgens Google gebeurt zo’n doorgifte op basis van het EU-VS Data Privacy Framework of van standaardcontractbepalingen/);
+  assert.match(s, /Cookie-instellingen’ onderaan elke pagina/);
+  assert.match(s, /art\. 6 lid 1 sub a/);
+  assert.match(s, /6 maanden; daarna vragen wij opnieuw/);
+  assert.doesNotMatch(s, /garande|gegarandeerd|volledig anoniem|veilig doorgegeven/i, 'geen ongefundeerde garanties');
   assert.match(s, /7 jaar/);
   assert.doesNotMatch(s, /\[\[OPEN|ISO 27001|certific/i);
   assert.doesNotMatch(s, /Supabase|Resend/);

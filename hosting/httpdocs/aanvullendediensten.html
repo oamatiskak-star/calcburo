@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index,follow">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.googletagmanager.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.com https://www.google.nl; style-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com; font-src 'self'; connect-src https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="canonical" href="https://calcburo.nl/#diensten">
   <title>Bouwcalculaties en begrotingscontrole | CalcBuro</title>
   <meta name="description" content="Bekijk de diensten van CalcBuro: inschrijfbegrotingen, hoeveelhedenstaten en begrotingscontrole.">
@@ -22,8 +22,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f7f6f1">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=6ba9faa0dc">
+  <link rel="stylesheet" href="assets/css/styles.css?v=481c0df5ad">
   <script src="assets/js/main.js?v=31b582f31d" defer></script>
+  <script src="assets/js/toestemming.js?v=a195c8cd03" defer></script>
 </head>
 <body id="top">
   <a class="skip-link" href="#inhoud">Direct naar de inhoud</a>
@@ -98,6 +99,7 @@
             <li><a href="voorbeeldcalculatie.html">Voorbeeldcalculatie</a></li>
             <li><a href="index.html#tarieven">Tarieven</a></li>
             <li><a href="privacy.html">Privacyverklaring</a></li>
+            <li hidden><button class="foot-knop" type="button" data-cookie-instellingen>Cookie-instellingen</button></li>
           </ul>
         </div>
       </nav>
