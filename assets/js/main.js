@@ -1,4 +1,5 @@
-/* Calcburo — mobiel menu en transparante e-mailconceptflow. Geen opslag, geen tracking. */
+/* CalcBuro — mobiel menu en transparante e-mailconceptflow. Geen opslag, geen tracking. */
+/* Optionele keuzes rol en uitwerking kunnen via ?rol=…&uitwerking=… vooraf worden ingevuld. */
 (function () {
   'use strict';
 
@@ -6,9 +7,10 @@
 
   var MOBILE_QUERY = '(max-width: 960px)';
   var MAIL_TO = 'calculatie@calcburo.nl';
-  var MAIL_SUBJECT = 'Calculatieaanvraag via Calcburo';
-  var STATUS_TEXT = 'Je e-mailconcept is voorbereid. Controleer en verstuur het in je e-mailprogramma. Werkt dat niet? Mail naar calculatie@calcburo.nl.';
+  var MAIL_SUBJECT = 'Calculatieaanvraag via CalcBuro';
+  var STATUS_TEXT = 'Uw e-mailconcept is voorbereid. Controleer en verstuur het in uw e-mailprogramma. Werkt dat niet? Mail naar calculatie@calcburo.nl.';
   var NOT_PROVIDED = 'niet opgegeven';
+  var PREFILL_FIELDS = ['rol', 'uitwerking'];
 
   function initMenu() {
     var toggle = document.querySelector('.menu-toggle');
@@ -62,12 +64,12 @@
   }
 
   var FIELD_MESSAGES = {
-    naam: { valueMissing: 'Vul je naam in.' },
+    naam: { valueMissing: 'Vul uw naam in.' },
     email: {
-      valueMissing: 'Vul je zakelijke e-mailadres in.',
+      valueMissing: 'Vul uw zakelijke e-mailadres in.',
       typeMismatch: 'Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl.'
     },
-    project: { valueMissing: 'Beschrijf kort je project en je calculatievraag.' }
+    project: { valueMissing: 'Beschrijf kort uw project en uw calculatievraag.' }
   };
 
   function messageFor(field) {
@@ -99,12 +101,34 @@
     return raw === '' ? NOT_PROVIDED : raw;
   }
 
+  function choiceOf(form, name) {
+    var select = form.elements[name];
+    if (!select || select.value === '') return NOT_PROVIDED;
+    return select.options[select.selectedIndex].text;
+  }
+
+  function prefillChoices(form) {
+    if (!window.URLSearchParams) return;
+    var params = new URLSearchParams(window.location.search);
+    PREFILL_FIELDS.forEach(function (name) {
+      var select = form.elements[name];
+      var wanted = params.get(name);
+      if (!select || !wanted) return;
+      var known = Array.prototype.some.call(select.options, function (option) {
+        return option.value !== '' && option.value === wanted;
+      });
+      if (known) select.value = wanted;
+    });
+  }
+
   function buildMailto(form) {
     var body = [
       'Naam: ' + valueOf(form, 'naam'),
       'Bedrijf: ' + valueOf(form, 'bedrijf'),
       'E-mail: ' + valueOf(form, 'email'),
-      'Gewenste planning: ' + valueOf(form, 'planning'),
+      'Rol: ' + choiceOf(form, 'rol'),
+      'Gewenste uitwerking: ' + choiceOf(form, 'uitwerking'),
+      'Gewenste oplevering / inschrijfdatum: ' + valueOf(form, 'planning'),
       '',
       'Projectomschrijving:',
       valueOf(form, 'project')
@@ -121,6 +145,7 @@
     if (!form || !status) return;
 
     form.noValidate = true;
+    prefillChoices(form);
     var validated = Array.prototype.slice.call(form.querySelectorAll('[required]'));
 
     validated.forEach(function (field) {

@@ -1,3 +1,6 @@
+// HISTORISCH — geschreven voor de eerste homepage (informele je-copy, oude hero, formulier zonder rol/uitwerking).
+// Niet bijgewerkt na de commerciële herpositionering van 29 oktober 2026; copygebonden controles (o.a. statustekst,
+// "Gewenste planning" in de mailbody) falen daardoor bewust. Gebruik tests/static-check.mjs voor de actuele versie.
 // Browsercontroles via lokale Google Chrome (headless) en het Chrome DevTools Protocol.
 // Geen npm-dependencies. Uitvoeren: node tests/browser-check.mjs
 // Optioneel: CHROME_PATH=/pad/naar/chrome node tests/browser-check.mjs
@@ -248,7 +251,7 @@ try {
     const u = new URL(mailto);
     const body = u.searchParams.get('body') || '';
     check('mailto naar calculatie@calcburo.nl', u.pathname === 'calculatie@calcburo.nl', u.pathname);
-    check('mailto onderwerp correct gecodeerd', u.searchParams.get('subject') === 'Calculatieaanvraag via Calcburo');
+    check('mailto onderwerp correct gecodeerd', u.searchParams.get('subject') === 'Calculatieaanvraag via CalcBuro');
     check('mailto body bevat speciale tekens ongeschonden (&, #, ?, =, +, ë)', body.includes('"kozijnen" & funderingen #3 ?=+ ëéü'));
     check('mailto body: lege optionele velden als "niet opgegeven"', body.includes('Bedrijf: niet opgegeven') && body.includes('Gewenste planning: niet opgegeven'));
     check(`mailto URL-lengte ${mailto.length} tekens (info)`, true);

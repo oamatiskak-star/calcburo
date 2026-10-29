@@ -1,4 +1,6 @@
-# Calcburo — definitieve homepage-specificatie
+# CalcBuro — definitieve homepage-specificatie
+
+> **Historisch.** Op 29 oktober 2026 vervangen door de voorlopige commerciële herpositionering (aanbestedingen, aannemers, ontwikkelaars, publieke opdrachtgevers; u-vorm). Actuele status: `REVIEWSTATUS.md`. Deze specificatie blijft als referentie van de eerste homepage.
 
 Status: commerciële richting vastgesteld uit opdracht; technische realisatie en visuele acceptatie volgen. Geen toestemming voor publicatie op het domein. Claude voert technisch uit; ChatGPT beoordeelt copy en beeld voor vrijgave.
 
@@ -6,8 +8,8 @@ Status: commerciële richting vastgesteld uit opdracht; technische realisatie en
 Nederlands B2B-calculatiebureau voor aannemers, bouwbedrijven en projectontwikkelaars. Werkhypothese: behoefte aan inzicht in hoeveelheden, uitgangspunten en bouwkosten bij offerte en voorbereiding. Geen aantallen klanten, ervaring, certificaten, gegarandeerde besparingen of levertijden claimen.
 
 ## Visuele regie
-Gebroken wit #F7F6F1 als basis, diepblauw #183344 voor tekst, petrol #305F60 voor primaire acties, salie #DCE5DC voor rustige vlakken, zand #E9DFCD als accent. Ruime marges, grote zakelijke typografie, verfijnde lijnen, rustige afgeronde hoeken. Woordmerk calcburo met klein geometrisch bouwdetail, geen relatie-logo's.
-Hero rechts (gewijzigd 29 oktober 2026): foto van een BIM-model van een bibliotheek (`assets/img/bim-bibliotheek.jpg`, Archdraw, Wikimedia Commons, CC BY-SA 4.0), volledig en ongewijzigd getoond in een rustige rechthoek zonder uitsnede of kleurfilter. Alt-tekst: "BIM-model van een bibliotheek met gebouwonderdelen en terreininrichting". Zichtbaar bijschrift: "Voorbeeld van een BIM-model · geen Calcburo-project", met naamsvermelding en licentielink in kleine, leesbare tekst. Licentiegegevens in ASSET-LICENSES.md. De eerdere lijnillustratie van een woongebouw (ook in homepage-visualisatie.html) is vervallen en niet langer definitief. Geen verzonnen dashboard, klantwerk of teamfoto. Wissel redactionele secties af met proces en documentdetails; vermijd een pagina vol identieke kaarten.
+Gebroken wit #F7F6F1 als basis, diepblauw #183344 voor tekst, petrol #305F60 voor primaire acties, salie #DCE5DC voor rustige vlakken, zand #E9DFCD als accent. Ruime marges, grote zakelijke typografie, verfijnde lijnen, rustige afgeronde hoeken. Woordmerk CalcBuro met klein geometrisch bouwdetail, geen relatie-logo's.
+Hero rechts (gewijzigd 29 oktober 2026): foto van een BIM-model van een bibliotheek (`assets/img/bim-bibliotheek.jpg`, Archdraw, Wikimedia Commons, CC BY-SA 4.0), volledig en ongewijzigd getoond in een rustige rechthoek zonder uitsnede of kleurfilter. Alt-tekst: "BIM-model van een bibliotheek met gebouwonderdelen en terreininrichting". Zichtbaar bijschrift: "Voorbeeld van een BIM-model · geen CalcBuro-project", met naamsvermelding en licentielink in kleine, leesbare tekst. Licentiegegevens in ASSET-LICENSES.md. De eerdere lijnillustratie van een woongebouw (ook in homepage-visualisatie.html) is vervallen en niet langer definitief. Geen verzonnen dashboard, klantwerk of teamfoto. Wissel redactionele secties af met proces en documentdetails; vermijd een pagina vol identieke kaarten.
 
 ## Homepage — definitieve copy
 
@@ -17,7 +19,7 @@ Diensten · Werkwijze · Technologie · Veelgestelde vragen. Primair: Calculatie
 ### Hero
 Label: BOUWKUNDIG INZICHT. HELDER GECALCULEERD.
 H1: Sterke bouwprojecten beginnen met een betrouwbare calculatie
-Tekst: Van tekeningen en projectstukken naar inzicht in hoeveelheden en bouwkosten. Calcburo combineert digitale hulpmiddelen met menselijke bouwkundige controle, zodat je weet waarop je calculatie is gebaseerd.
+Tekst: Van tekeningen en projectstukken naar inzicht in hoeveelheden en bouwkosten. CalcBuro combineert digitale hulpmiddelen met menselijke bouwkundige controle, zodat je weet waarop je calculatie is gebaseerd.
 CTA: Calculatie aanvragen. Secundair: Onze werkwijze.
 Onderregel: Heldere uitgangspunten · Inzicht in hoeveelheden · Bouwkundig gecontroleerd
 
@@ -65,7 +67,7 @@ Geen melding dat aanvraag ontvangen is zonder echte verzending. Geen backend of 
 Direct: Calculatievragen: calculatie@calcburo.nl. Algemene vragen: info@calcburo.nl.
 
 ### Footer
-calcburo — Bouwkundige calculatie met inzicht.
+CalcBuro — Bouwkundige calculatie met inzicht.
 Diensten · Werkwijze · Calculatie aanvragen · info@calcburo.nl
 Geen fictief adres, telefoon, KvK of juridische documenten. Voor productie werkelijke bedrijfsgegevens en privacy-informatie aanvullen.
 
@@ -73,8 +75,8 @@ Geen fictief adres, telefoon, KvK of juridische documenten. Voor productie werke
 Alle primaire CTA's leiden naar #aanvragen. Secundair naar #werkwijze. Servicebezoeker vindt scope en resultaat; twijfelende bezoeker vindt proces, menselijke controle en FAQ. Aanvraag blijft laagdrempelig, zonder verplichte bijlagen of telefoonnummer. Preview e-mailflow maakt verzending expliciet. Voor productie kiezen tussen deze transparante mailflow of geteste serververzending met privacytekst en foutafhandeling.
 
 ## Metadata en techniek
-Titel: Calcburo | Bouwkundige calculatie met inzicht
-Beschrijving: Inzicht in hoeveelheden en bouwkosten. Calcburo combineert digitale hulpmiddelen met menselijke bouwkundige controle. Bespreek je calculatievraag.
+Titel: CalcBuro | Bouwkundige calculatie met inzicht
+Beschrijving: Inzicht in hoeveelheden en bouwkosten. CalcBuro combineert digitale hulpmiddelen met menselijke bouwkundige controle. Bespreek je calculatievraag.
 Preview: noindex,nofollow. HTML lang=nl, semantische landmarks, zichtbare focus, toetsenbordbediening, leesbaar contrast, respect voor reduced-motion. Responsive op 375, 768 en 1440 pixels; geen horizontale overflow. Geen externe fonts, cookies of analysetools nodig.
 
 ## Acceptatie vóór publicatie
