@@ -1,0 +1,308 @@
+/* CalcBuro — aanvraagpagina, homepage-CTA en ontvangstbewijs. Bouwt voort op de tokens in styles.css. */
+
+.request-cta {
+  align-self: start;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-top: 4px solid var(--petrol);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  box-shadow: 0 18px 40px -28px rgb(24 51 68 / 0.45);
+}
+
+.request-cta-kop {
+  margin: 0 0 0.75rem;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--petrol);
+}
+
+.request-cta-lijst {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.request-cta-lijst li {
+  position: relative;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.request-cta-lijst li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.95rem;
+  width: 0.625rem;
+  height: 2px;
+  background: var(--petrol);
+}
+
+.request-cta-noot {
+  margin: 1rem 0 0;
+  color: var(--muted);
+}
+
+.intake h1 {
+  font-size: var(--text-h2);
+}
+
+.intake-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "intro formulier"
+    "info formulier";
+  column-gap: clamp(2.25rem, 0.5rem + 6vw, 5.625rem);
+  align-items: start;
+}
+
+.intake-intro {
+  grid-area: intro;
+}
+
+.intake-formulier {
+  grid-area: formulier;
+  min-width: 0;
+}
+
+.intake-info {
+  grid-area: info;
+}
+
+.intake-sub {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 2rem 0 0.75rem;
+}
+
+.intake-proces summary {
+  list-style: none;
+}
+
+.intake-proces summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (min-width: 701px) {
+  /* Desktop: de stappen staan altijd open, zoals in het oorspronkelijke ontwerp. */
+  .intake-proces summary {
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Mobiel: titel en intro, dan direct het formulier; stappen ingeklapt eronder. */
+  .intake-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+      "intro"
+      "formulier"
+      "info";
+    row-gap: 1.5rem;
+  }
+
+  .intake-proces {
+    background: var(--paper);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 0 1rem;
+  }
+
+  .intake-proces .intake-sub {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 0.875rem 0;
+    font-size: 1.0625rem;
+    cursor: pointer;
+  }
+
+  .intake-proces .intake-sub::after {
+    content: "+";
+    color: var(--petrol);
+    font-size: 1.375rem;
+    line-height: 1;
+  }
+
+  .intake-proces[open] .intake-sub::after {
+    content: "−";
+  }
+
+  .intake-proces .intake-sub:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .intake-proces .intake-steps {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.intake-steps {
+  counter-reset: stap;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
+.intake-steps li {
+  counter-increment: stap;
+  position: relative;
+  padding: 0.5rem 0 0.5rem 2.5rem;
+}
+
+.intake-steps li::before {
+  content: counter(stap);
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--petrol);
+  border-radius: 50%;
+  color: var(--petrol);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.65rem;
+  text-align: center;
+}
+
+.intake .request-form,
+.intake-notice,
+.receipt {
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+}
+
+.intake-notice {
+  border-left: 4px solid var(--petrol);
+}
+
+.intake-notice.is-fout {
+  border-left-color: var(--error);
+}
+
+.intake-test {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--sand);
+  border-left: 4px solid var(--focus);
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.field input[type="file"] {
+  padding: 0.625rem;
+  cursor: pointer;
+}
+
+.file-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: var(--text-small);
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.file-list .grootte {
+  flex: none;
+  color: var(--muted);
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form-status.is-fout {
+  border-left-color: var(--error);
+  color: var(--error);
+  font-weight: 600;
+}
+
+.form-status.is-bezig {
+  border-left-color: var(--focus);
+}
+
+.request-form button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.receipt {
+  border-top: 4px solid var(--petrol);
+}
+
+.receipt:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.receipt h1,
+.receipt h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+.receipt-ref {
+  margin: 0.25rem 0 1rem;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--petrol-dark);
+}
+
+.intake-result .receipt,
+.intake-result .intake-notice {
+  max-width: 44rem;
+}
+
+.privacy-tekst {
+  max-width: 46rem;
+}
+
+.privacy-tekst h2 {
+  font-size: 1.375rem;
+  margin: 2.25rem 0 0.75rem;
+}
+
+.privacy-tekst table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+
+.privacy-tekst th,
+.privacy-tekst td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 700px) {
+  .request-cta {
+    margin-top: 1.5rem;
+  }
+}

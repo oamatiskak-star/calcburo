@@ -1,4 +1,5 @@
-// Statische controles voor de CalcBuro-preview (homepage, zes landingspagina's, voorbeeldcalculatie, aanvullende diensten).
+// Statische controles voor de root-preview (compatibiliteit; de live site staat in hosting/httpdocs met eigen tests).
+// Pagina's: homepage, zes landingspagina's, voorbeeldcalculatie, aanvullende diensten.
 // Uitvoeren: node tests/static-check.mjs — geen dependencies.
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -199,8 +200,6 @@ const homeCopy = [
   '<p class="tariff-price">Prijs op maat</p>',
   '<p class="tariff-price">€ 85 per uur <span>excl. btw</span></p>',
   '<p class="tariff-price">Op aanvraag</p>',
-  'CalcBuro bouwt voort op SterkCalc.',
-  'gaat verder onder de naam CalcBuro',
   'De vergoeding hangt af van de omvang van het project, de kwaliteit en volledigheid van de stukken, het gewenste detailniveau en de deadline. U ontvangt vooraf een voorstel',
   '<summary>Hulp bij uw aanvraag</summary>',
   '<label for="veld-rol">Uw rol</label>',
@@ -221,8 +220,10 @@ check('[index] verplichte velden ongewijzigd (naam, e-mail, project)', [...index
 check('[index] mailto calculatie@ en info@', index.includes('href="mailto:calculatie@calcburo.nl"') && index.includes('href="mailto:info@calcburo.nl"'));
 check('[index] formulier alleen mailto', index.includes('action="mailto:calculatie@calcburo.nl"'));
 check('[index] geen chatbot of ontvangstbevestiging', !/chat|ontvangen wij|is verzonden|bedankt voor uw aanvraag/i.test(textOf(index)));
-check('[index] hero-beeld lokaal met afmetingen', index.includes('src="assets/img/constructiemodel.png" width="3151" height="2633"'));
-check('[index] hero-bijschrift en bronvermelding', index.includes('Voorbeeld van een constructiemodel · geen CalcBuro-project') && index.includes('Patmacgin, Wikimedia Commons</a>') && index.includes('rel="license">CC BY-SA 4.0</a>'));
+check('[index] geen SterkCalc-continuïteitsblok (op verzoek eigenaar verwijderd)', !index.includes('id="continuiteit"') && !index.includes('bouwt voort op SterkCalc'));
+check('[index] hero-foto lokaal met afmetingen en 800w-variant', index.includes('src="assets/img/bouwkundige-controle.jpg" srcset="assets/img/bouwkundige-controle-800.jpg 800w, assets/img/bouwkundige-controle.jpg 1600w"') && index.includes('width="1600" height="844"'));
+check('[index] hero-foto met beschrijvende alt-tekst', index.includes('alt="Twee professionals beoordelen digitale bouwtekeningen en papieren plannen"'));
+check('[index] hero-foto gedocumenteerd in ASSET-LICENSES.md', readFileSync(join(root, 'ASSET-LICENSES.md'), 'utf8').includes('assets/img/bouwkundige-controle.jpg'));
 check('ASSET-LICENSES.md aanwezig', existsSync(join(root, 'ASSET-LICENSES.md')));
 check('SEO-LAUNCHPLAN.md aanwezig', existsSync(join(root, 'SEO-LAUNCHPLAN.md')));
 check('geen sitemap.xml of robots.txt in preview', !existsSync(join(root, 'sitemap.xml')) && !existsSync(join(root, 'robots.txt')));

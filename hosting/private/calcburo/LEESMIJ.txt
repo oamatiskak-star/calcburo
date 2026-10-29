@@ -1,0 +1,21 @@
+CalcBuro — private opslag aanvragen (buiten httpdocs, niet via de website bereikbaar)
+
+aanvragen/CB-XXXXXXXX/aanvraag.json     gegevens van de aanvraag + lijst documenten (oorspronkelijke naam -> opslagnaam)
+aanvragen/CB-XXXXXXXX/mailstatus.json   of de interne melding en de bevestiging door de mailserver zijn geaccepteerd
+aanvragen/CB-XXXXXXXX/documenten/       documenten onder willekeurige namen
+limiet/tellers.json                     tellers misbruikbeperking (alleen hashes)
+idempotentie/                           <hash>.json koppelt formulier-ID aan referentie + inhoudshash; <hash>.lock = slot (7 dagen)
+opslag.lock                             slot voor capaciteitsmeting en opslag (niet verwijderen tijdens gebruik)
+capaciteit-gemeld                       tijdstip laatste waarschuwing 'opslaglimiet bereikt'
+geheim.key                              lokale HMAC-sleutel; niet delen, niet verwijderen tijdens gebruik
+
+Bewaartermijn: aanvragen zonder opdracht worden na 90 dagen verwijderd door de dagelijkse geplande taak
+calcburo-app/bin/opschonen.php --uitvoeren. De interne meldingsmail in calculatie@ verwijdert u na 90 dagen zelf.
+
+Opslaglimiet: 1 GiB (opslag_max_bytes in calcburo-app/config.php). Vol = nieuwe aanvragen netjes geweigerd,
+niets verwijderd. Ruimte maken door afgeronde aanvragen naar het dossier te verplaatsen.
+
+Bij een opdracht: de map naar het eigen opdrachtdossier verplaatsen (buiten deze map), of een leeg
+bestand met de naam BEWAREN in de aanvraagmap zetten. Mappen met BEWAREN worden nooit automatisch verwijderd.
+
+Documenten alleen openen met actuele software; ze zijn op type en inhoud gecontroleerd, niet op virussen.

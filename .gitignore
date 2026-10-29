@@ -1,2 +1,9 @@
 .DS_Store
 .tmp-chrome-profile/
+
+# Hosting: runtime- en testgegevens horen nooit in git
+hosting/tests/.tmp-*/
+hosting/private/calcburo/*
+!hosting/private/calcburo/LEESMIJ.txt
+hosting/calcburo-app/config.local.php
+*.key

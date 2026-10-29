@@ -1,0 +1,23 @@
+Options -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\.calcburo\.nl$ [NC]
+RewriteRule ^ https://calcburo.nl%{REQUEST_URI} [R=301,L]
+RewriteRule ^aanvullendediensten(?:\.html)?/?$ /#diensten [R=301,L,NE]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+<Files ".user.ini">
+  Require all denied
+</Files>
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Static HTML revalidates; PHP retains its stricter no-store response.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header always set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

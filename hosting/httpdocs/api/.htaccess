@@ -1,0 +1,5 @@
+# Alleen het eindpunt zelf is bereikbaar.
+Options -Indexes
+<FilesMatch "^(?!aanvraag\.php$).*">
+  Require all denied
+</FilesMatch>
