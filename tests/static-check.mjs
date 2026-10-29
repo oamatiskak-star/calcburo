@@ -18,8 +18,9 @@ check('titel conform specificatie', html.includes('<title>Calcburo | Bouwkundige
 check('description conform specificatie', html.includes('content="Inzicht in hoeveelheden en bouwkosten. Calcburo combineert digitale hulpmiddelen met menselijke bouwkundige controle. Bespreek je calculatievraag."'));
 check('viewport meta', html.includes('name="viewport"'));
 
-// Externe afhankelijkheden
-const external = [...html.matchAll(/(?:src|href)="(https?:)?\/\//g)].length
+// Externe afhankelijkheden (geladen bronnen; gewone hyperlinks zoals de bronvermelding tellen niet mee)
+const external = [...html.matchAll(/\ssrc="(https?:)?\/\//g)].length
+  + [...html.matchAll(/<link[^>]*\shref="(https?:)?\/\//g)].length
   + [...css.matchAll(/url\(\s*["']?https?:/g)].length
   + [...css.matchAll(/@import/g)].length
   + [...js.matchAll(/https?:\/\//g)].length;
@@ -86,6 +87,14 @@ check('5 FAQ-items als <details>', [...html.matchAll(/<details>/g)].length === 5
 const forbidden = /(gegarandeerd|garantie|gecertificeerd|foutloos|volledig automatisch|ISO ?\d|KvK|\+31|tel:|€)/i;
 const visibleText = html.replace(/<[^>]+>/g, ' ');
 check('geen verboden claims/fictieve gegevens', !forbidden.test(visibleText), (visibleText.match(forbidden) || [''])[0]);
+// Hero-afbeelding en bronvermelding
+check('hero-foto lokaal met afmetingen', html.includes('src="assets/img/bim-bibliotheek.jpg" width="5000" height="2650"'));
+check('hero-foto alt-tekst', html.includes('alt="BIM-model van een bibliotheek met gebouwonderdelen en terreininrichting"'));
+check('hero-figcaption zichtbaar', html.includes('Voorbeeld van een BIM-model · geen Calcburo-project'));
+check('bronvermelding Archdraw, Wikimedia Commons', html.includes('href="https://commons.wikimedia.org/wiki/File:Architectural_BIM_3D_Modeling.jpg">Archdraw, Wikimedia Commons</a>'));
+check('licentielink CC BY-SA 4.0', html.includes('href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>'));
+check('oude lijnillustratie verwijderd', !html.includes('art-titel') && !html.includes('ILLUSTRATIE · GEEN KLANTPROJECT'));
+check('ASSET-LICENSES.md aanwezig', existsSync(join(root, 'ASSET-LICENSES.md')));
 check('geen bestandsupload', !/type="file"/.test(html));
 
 // Toegankelijkheid / beweging

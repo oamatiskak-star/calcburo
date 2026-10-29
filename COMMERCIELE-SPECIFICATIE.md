@@ -7,7 +7,7 @@ Nederlands B2B-calculatiebureau voor aannemers, bouwbedrijven en projectontwikke
 
 ## Visuele regie
 Gebroken wit #F7F6F1 als basis, diepblauw #183344 voor tekst, petrol #305F60 voor primaire acties, salie #DCE5DC voor rustige vlakken, zand #E9DFCD als accent. Ruime marges, grote zakelijke typografie, verfijnde lijnen, rustige afgeronde hoeken. Woordmerk calcburo met klein geometrisch bouwdetail, geen relatie-logo's.
-Hero rechts: originele architectonische lijnillustratie van een woongebouw op lichte ondergrond, met subtiele maatlijnen en documentlagen. Het is een illustratie, geen klantproject. Geen verzonnen dashboard, klantwerk of teamfoto. Wissel redactionele secties af met proces en documentdetails; vermijd een pagina vol identieke kaarten.
+Hero rechts (gewijzigd 29 oktober 2026): foto van een BIM-model van een bibliotheek (`assets/img/bim-bibliotheek.jpg`, Archdraw, Wikimedia Commons, CC BY-SA 4.0), volledig en ongewijzigd getoond in een rustige rechthoek zonder uitsnede of kleurfilter. Alt-tekst: "BIM-model van een bibliotheek met gebouwonderdelen en terreininrichting". Zichtbaar bijschrift: "Voorbeeld van een BIM-model · geen Calcburo-project", met naamsvermelding en licentielink in kleine, leesbare tekst. Licentiegegevens in ASSET-LICENSES.md. De eerdere lijnillustratie van een woongebouw (ook in homepage-visualisatie.html) is vervallen en niet langer definitief. Geen verzonnen dashboard, klantwerk of teamfoto. Wissel redactionele secties af met proces en documentdetails; vermijd een pagina vol identieke kaarten.
 
 ## Homepage — definitieve copy
 

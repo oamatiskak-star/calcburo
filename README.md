@@ -13,12 +13,14 @@ index.html                 Homepage (alle copy uit de specificatie)
 assets/css/styles.css      Lokale stijlen, design tokens, responsive, reduced-motion
 assets/js/main.js          Mobiel menu + transparante mailto-conceptflow
 assets/img/favicon.svg     Lokale favicon
+assets/img/bim-bibliotheek.jpg  Hero-foto BIM-model (CC BY-SA 4.0, zie ASSET-LICENSES.md)
+ASSET-LICENSES.md          Maker, bron en licentie van gebruikte beelden
 tests/static-check.mjs     Statische controles (Node, geen dependencies)
 tests/browser-check.mjs    Browsercontroles via lokale Chrome headless (CDP, geen dependencies)
 tests/screenshots/         Screenshots van de laatste browsertestrun
 ```
 
-Geen externe fonts, scripts, afbeeldingen, cookies, analytics of tracking. Een Content-Security-Policy (meta) staat alleen `'self'`, `data:`-afbeeldingen en `mailto:` als formulierdoel toe.
+Geen externe fonts, scripts, afbeeldingen, cookies, analytics of tracking. De hero-foto staat lokaal; alleen de bronvermelding bevat gewone hyperlinks naar Wikimedia Commons en Creative Commons. Een Content-Security-Policy (meta) staat alleen `'self'`, `data:`-afbeeldingen en `mailto:` als formulierdoel toe.
 
 ## Lokale preview
 
@@ -50,8 +52,8 @@ node tests/browser-check.mjs   # 47 controles, vereist Google Chrome
 
 | Onderdeel | Resultaat |
 |---|---|
-| Statische controles (metadata, noindex, copy, ankers, ARIA-referenties, labels, unieke id's, geen externe assets, verboden claims, contrast) | 90/90 geslaagd |
-| Browsercontroles (Chrome headless) | 47/47 geslaagd |
+| Statische controles (metadata, noindex, copy, ankers, ARIA-referenties, labels, unieke id's, geen externe assets, verboden claims, contrast) | 96/96 geslaagd (na vervanging hero-afbeelding) |
+| Browsercontroles (Chrome headless) | 47/47 geslaagd vóór vervanging hero-afbeelding; niet opnieuw uitgevoerd |
 | JS-syntax (`node --check`) | OK |
 
 Getest in de browsercontrole:
