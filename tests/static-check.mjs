@@ -88,10 +88,13 @@ const forbidden = /(gegarandeerd|garantie|gecertificeerd|foutloos|volledig autom
 const visibleText = html.replace(/<[^>]+>/g, ' ');
 check('geen verboden claims/fictieve gegevens', !forbidden.test(visibleText), (visibleText.match(forbidden) || [''])[0]);
 // Hero-afbeelding en bronvermelding
-check('hero-foto lokaal met afmetingen', html.includes('src="assets/img/bim-bibliotheek.jpg" width="5000" height="2650"'));
-check('hero-foto alt-tekst', html.includes('alt="BIM-model van een bibliotheek met gebouwonderdelen en terreininrichting"'));
-check('hero-figcaption zichtbaar', html.includes('Voorbeeld van een BIM-model · geen Calcburo-project'));
-check('bronvermelding Archdraw, Wikimedia Commons', html.includes('href="https://commons.wikimedia.org/wiki/File:Architectural_BIM_3D_Modeling.jpg">Archdraw, Wikimedia Commons</a>'));
+check('hero-beeld lokaal met afmetingen', html.includes('src="assets/img/constructiemodel.png" width="3151" height="2633"'));
+check('hero-beeld alt-tekst', html.includes('alt="Open constructiemodel met kolommen, liggers en stabiliteitsverbanden"'));
+check('hero-figcaption zichtbaar', html.includes('Voorbeeld van een constructiemodel · geen Calcburo-project'));
+check('bronvermelding Patmacgin, Wikimedia Commons', html.includes('href="https://commons.wikimedia.org/wiki/File:Titanic_Building_Structural_Model.png">Patmacgin, Wikimedia Commons</a>'));
+check('vorige hero-afbeelding niet meer gebruikt', !html.includes('bim-bibliotheek') && !html.includes('Archdraw'));
+check('hero-bijschrift noemt geen installaties', !/installatie|MEP|leiding|kanaal/i.test((html.match(/<figure class="hero-art">[\s\S]*?<\/figure>/) || [''])[0]));
+check('hero-afbeelding volledig (geen object-fit/uitsnede)', !/\.hero-art img\s*\{[^}]*(object-fit|aspect-ratio|clip-path)/.test(css));
 check('licentielink CC BY-SA 4.0', html.includes('href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>'));
 check('oude lijnillustratie verwijderd', !html.includes('art-titel') && !html.includes('ILLUSTRATIE · GEEN KLANTPROJECT'));
 check('ASSET-LICENSES.md aanwezig', existsSync(join(root, 'ASSET-LICENSES.md')));

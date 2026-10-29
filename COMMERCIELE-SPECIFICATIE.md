@@ -79,3 +79,6 @@ Preview: noindex,nofollow. HTML lang=nl, semantische landmarks, zichtbare focus,
 
 ## Acceptatie vóór publicatie
 ChatGPT controleert volledige copy tegen deze tekst, geloofwaardige AI-positionering, visuele uitvoering op desktop/mobiel, werkende CTA's, menu, FAQ, formulier en e-mailadressen. Geen productie- of domeinwijzigingen aan STRKBOUW of SterkCalc. Repository uitsluitend calcburo, standaard privé. Publicatie op calcburo.nl pas na visuele/copyacceptatie en controle van werkelijke bedrijfsgegevens, privacy en contactverwerking. Geen fictieve referenties of tarieven toevoegen.
+
+## Actuele beeldkeuze
+De bibliotheekweergave is vervallen na gebruikersfeedback. Actueel: open constructiemodel van Patmacgin, CC BY-SA 4.0; zie ASSET-LICENSES.md. Gebruikersvoorbeeld van ViBIM uitsluitend referentie, niet gebruiken.

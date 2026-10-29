@@ -18,3 +18,6 @@ Status: nog niet visueel geaccepteerd. Statische controles na de wijziging: 96/9
 
 ## Beoordeling na beeldwijziging
 ChatGPT heeft de nieuwe BIM-afbeelding in de lokale preview bekeken en accepteert de afbeelding, het volledige beeld zonder uitsnede en de zichtbare bron- en licentievermelding als preview. De oorspronkelijke afbeelding is ongewijzigd gedownload. De oude screenshots gelden als historische controle, niet als actuele visuele weergave. Nieuwe screenshot: homepage-bim-preview.png in de gedeelde outputs. Geen domeinpublicatie uitgevoerd.
+
+## Nieuwe beeldrichting na gebruikersreferentie
+Het aangeleverde ViBIM-voorbeeld is uitsluitend als richting gebruikt en is niet in de website opgenomen. De hero toont nu een vrij gelicentieerd open constructiemodel van Patmacgin (Titanic Building Structural Model), met kolommen, liggers en stabiliteitsverbanden. Het toont geen MEP-installaties en is dus geen volledige evenknie van de aangeleverde referentie. ChatGPT heeft de lokale weergave en zichtbare credit gecontroleerd. De vorige beeldacceptatie voor de bibliotheek is hiermee vervallen. De originele transparante PNG is ongeveer 10 MB; voor productie moet een lichtere webversie worden gemaakt. Geen publicatie of GitHub-push uitgevoerd.

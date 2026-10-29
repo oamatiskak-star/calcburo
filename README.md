@@ -13,7 +13,7 @@ index.html                 Homepage (alle copy uit de specificatie)
 assets/css/styles.css      Lokale stijlen, design tokens, responsive, reduced-motion
 assets/js/main.js          Mobiel menu + transparante mailto-conceptflow
 assets/img/favicon.svg     Lokale favicon
-assets/img/bim-bibliotheek.jpg  Hero-foto BIM-model (CC BY-SA 4.0, zie ASSET-LICENSES.md)
+assets/img/constructiemodel.png  Hero-beeld constructiemodel (CC BY-SA 4.0, zie ASSET-LICENSES.md)
 ASSET-LICENSES.md          Maker, bron en licentie van gebruikte beelden
 tests/static-check.mjs     Statische controles (Node, geen dependencies)
 tests/browser-check.mjs    Browsercontroles via lokale Chrome headless (CDP, geen dependencies)
